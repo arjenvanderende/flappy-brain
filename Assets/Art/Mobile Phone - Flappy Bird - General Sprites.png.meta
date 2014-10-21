@@ -1,0 +1,212 @@
+fileFormatVersion: 2
+guid: be5fa61ebf3094f228f5fae50685d756
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: Flappy 1
+    21300002: Flappy 3
+    21300004: Flappy 2
+    21300006: Coin (bronze)
+    21300008: Coin (missing)
+    21300010: Coin (gold)
+    21300012: Coin (silver)
+    21300014: Instructions
+    21300016: Ground
+    21300018: Score Box
+    21300020: Pipe (upside-down)
+    21300022: Pipe
+    21300024: Flappy Bird
+    21300026: Game Over
+    21300028: Get Ready
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: 0
+    aniso: 1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 1
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: Flappy 1
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 120
+        width: 17
+        height: 12
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Flappy 3
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 180
+        width: 17
+        height: 12
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Flappy 2
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 154
+        width: 17
+        height: 12
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Coin (bronze)
+      rect:
+        serializedVersion: 2
+        x: 302
+        y: 97
+        width: 22
+        height: 22
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Coin (missing)
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 90
+        width: 22
+        height: 22
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Coin (gold)
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 5
+        width: 22
+        height: 22
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Coin (silver)
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 5
+        width: 22
+        height: 22
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Instructions
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 85
+        width: 38
+        height: 49
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Ground
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 200
+        width: 154
+        height: 56
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Score Box
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 140
+        width: 113
+        height: 58
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Pipe (upside-down)
+      rect:
+        serializedVersion: 2
+        x: 302
+        y: 121
+        width: 26
+        height: 135
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Pipe
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 135
+        width: 26
+        height: 121
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Flappy Bird
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 61
+        width: 96
+        height: 22
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Game Over
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 38
+        width: 93
+        height: 19
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Get Ready
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 13
+        width: 87
+        height: 22
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 
