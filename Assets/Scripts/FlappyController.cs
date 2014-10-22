@@ -16,14 +16,7 @@ public class FlappyController : MonoBehaviour {
 			jump = true;
 		}
 
-		Vector2 forward = new Vector2 (forwardVelocity, 0);
-		Vector2 direction = forward + gameObject.rigidbody2D.velocity;
-		float angle = Vector2.Angle (forward, direction);
-		if (direction.y < 0)
-			angle = -angle;
-
-		Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-		gameObject.transform.rotation = rotation;
+		LookAtFlyingDirection ();
 	}
 
 	void FixedUpdate () {
@@ -31,6 +24,17 @@ public class FlappyController : MonoBehaviour {
 			Jump();
 			jump = false;
 		}
+	}
+	
+	void LookAtFlyingDirection() {
+		Vector2 forward = new Vector2 (forwardVelocity, 0);
+		Vector2 direction = forward + gameObject.rigidbody2D.velocity;
+		float angle = Vector2.Angle (forward, direction);
+		if (direction.y < 0)
+			angle = -angle;
+		
+		Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+		gameObject.transform.rotation = rotation;
 	}
 
 	void Jump () {
