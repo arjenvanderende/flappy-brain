@@ -52,7 +52,7 @@ public class EegInput : MonoBehaviour {
 	}
 
 	void BlinkEvent() {
-		flappyController.Flap ();
+		flappyController.JumpEvent();
 		Debug.Log ("Blinked!");
 	}
 
