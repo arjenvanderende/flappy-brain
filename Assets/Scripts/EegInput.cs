@@ -63,6 +63,7 @@ public class EegInput : MonoBehaviour {
 		// get current height
 		// get target height
 		// if target height > current => flap!
+		Debug.Log (flappy.rigidbody2D.position.y);
 	}
 
 	/**
