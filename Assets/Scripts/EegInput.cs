@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System;
 
-public class Input : MonoBehaviour {
+public class EegInput : MonoBehaviour {
 
 	UDPPacketIO udp;
 	Osc handler;
@@ -27,7 +27,7 @@ public class Input : MonoBehaviour {
 		handler.SetAddressHandler("/muse/dsp/blink", BlinkMessage);
 
 		// Twice a second log beta value to console
-		InvokeRepeating("LogBeta", 3, 1);
+		//InvokeRepeating("LogBeta", 3, 1);
 		InvokeRepeating("GetSmoothed", 3, (float)0.1);
 		InvokeRepeating ("GetConcentrated", 3, 1);
 
