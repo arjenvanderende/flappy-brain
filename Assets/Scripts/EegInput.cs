@@ -15,8 +15,11 @@ public class EegInput : MonoBehaviour {
 	Single concentrationBase;
 	Single[] concArray = new Single[10];
 	int concCounter = 0;
+	private FlappyController flappyController;
+	public GameObject flappy;
 
 	void Start () {
+		flappyController = flappy.GetComponent<FlappyController> ();
 
 		udp = GetComponent<UDPPacketIO>();
 		udp.init("127.0.0.1", 3001, 3000);
@@ -26,10 +29,10 @@ public class EegInput : MonoBehaviour {
 		handler.SetAddressHandler("/muse/dsp/elements/beta", BetaMessage);
 		handler.SetAddressHandler("/muse/dsp/blink", BlinkMessage);
 
-		// Twice a second log beta value to console
-		//InvokeRepeating("LogBeta", 3, 1);
-		InvokeRepeating("GetSmoothed", 3, (float)0.1);
-		InvokeRepeating ("GetConcentrated", 3, 1);
+		InvokeRepeating("LogBeta", 3, 2);
+		InvokeRepeating("UpdateSmoothedBeta", 3, (float)0.1);
+		InvokeRepeating ("UpdateBaseLevel", 3, 1);
+		InvokeRepeating ("Autopilot", 1, (float)0.2);
 
 		concentrationBase = (Single)0.10;
 	}
@@ -49,10 +52,17 @@ public class EegInput : MonoBehaviour {
 	}
 
 	void BlinkEvent() {
+		flappyController.Flap ();
 		Debug.Log ("Blinked!");
 	}
 
 	void Update() {
+	}
+
+	void Autopilot() {
+		// get current height
+		// get target height
+		// if target height > current => flap!
 	}
 
 	/**
@@ -72,7 +82,7 @@ public class EegInput : MonoBehaviour {
 	/**
 	 * Smooth samples over all betaArray samples
 	 */
-	void GetSmoothed(){
+	void UpdateSmoothedBeta(){
 		betaArray [betaCounter] = beta;
 		Single result = 0;
 		foreach (Single value in betaArray) {
@@ -90,7 +100,7 @@ public class EegInput : MonoBehaviour {
 	 * If average smoothedBeta over last X seconds is higher then 
 	 * concentrationBase, then update with higher value
 	 */
-	void GetConcentrated() {
+	void UpdateBaseLevel() {
 		concArray [concCounter] = smoothedBeta;
 		Single result = 0;
 		foreach (Single value in concArray) {
@@ -99,8 +109,10 @@ public class EegInput : MonoBehaviour {
 			result += value;
 		}
 		result /= concArray.Length;
+
 		if (result > concentrationBase)
 			concentrationBase = result;
+
 		concCounter++;
 		if (concCounter >= concArray.Length)
 			concCounter = 0;
