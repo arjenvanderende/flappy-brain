@@ -8,15 +8,20 @@ public class EegInput : MonoBehaviour {
 
 	UDPPacketIO udp;
 	Osc handler;
+
 	Single beta;
 	Single[] betaArray = new Single[20]; 
 	Single smoothedBeta;
 	int betaCounter = 0;
 	Single concentrationBase;
-	Single[] concArray = new Single[10];
+	Single[] concArray = new Single[100];
 	int concCounter = 0;
+	Single acceptError = (float)0.2;
+
 	private FlappyController flappyController;
 	public GameObject flappy;
+
+	//bool started = false;
 
 	void Start () {
 		flappyController = flappy.GetComponent<FlappyController> ();
@@ -28,11 +33,12 @@ public class EegInput : MonoBehaviour {
 		handler.init(udp);
 		handler.SetAddressHandler("/muse/dsp/elements/beta", BetaMessage);
 		handler.SetAddressHandler("/muse/dsp/blink", BlinkMessage);
+		handler.SetAddressHandler("/muse/dsp/status_indicator", StatusIndicator);
 
 		InvokeRepeating("LogBeta", 3, 2);
 		InvokeRepeating("UpdateSmoothedBeta", 3, (float)0.1);
-		InvokeRepeating ("UpdateBaseLevel", 3, 1);
-		InvokeRepeating ("Autopilot", 1, (float)0.2);
+		InvokeRepeating ("UpdateBaseLevel", 3, (float)0.1);
+		InvokeRepeating ("Autopilot", 1, (float)0.1);
 
 		concentrationBase = (Single)0.10;
 	}
@@ -56,14 +62,22 @@ public class EegInput : MonoBehaviour {
 		Debug.Log ("Blinked!");
 	}
 
+	void StatusIndicator(OscMessage message) {
+		Debug.Log (Osc.OscMessageToString (message));
+	}
+
 	void Update() {
 	}
 
 	void Autopilot() {
-		// get current height
-		// get target height
-		// if target height > current => flap!
-		Debug.Log (flappy.rigidbody2D.position.y);
+		Single currentHeight = flappy.rigidbody2D.position.y;
+		Single targetHeight = 100;
+		if (currentHeight - targetHeight < 0 && IsConcentrated())
+			flappyController.JumpEvent ();
+	}
+
+	bool IsConcentrated() {
+		return smoothedBeta > (concentrationBase - concentrationBase * acceptError);
 	}
 
 	/**
