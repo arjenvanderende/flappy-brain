@@ -5,19 +5,15 @@ public class FlappyController : MonoBehaviour {
 
 	public float forwardVelocity;
 	public float impulse;
-
-
+	
 	private bool jump = false;
 
-	void Update () {
-		if (Input.GetButtonDown ("Fire1")) {
-			jump = true;
-		}
+	void Start () {
 	}
 
-	void Update () {
+        void Update () {
 		if (Input.GetButton ("Fire1")) {
-			jump = true;
+			JumpEvent();
 		}
 
 		Vector2 forward = new Vector2 (forwardVelocity, 0);
@@ -43,5 +39,9 @@ public class FlappyController : MonoBehaviour {
 		Vector2 force = new Vector2 (0, impulse) - gameObject.rigidbody2D.velocity;
 		Vector2 amplifiedForce = force * gameObject.rigidbody2D.mass;
 		gameObject.rigidbody2D.AddForce(amplifiedForce, ForceMode2D.Impulse);
+	}
+
+	public void JumpEvent() {
+		jump = true;
 	}
 }
