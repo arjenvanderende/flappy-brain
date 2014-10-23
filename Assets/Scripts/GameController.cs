@@ -7,18 +7,22 @@ public class GameController : MonoBehaviour {
 
 	public GameObject flappy;
 	public EegInput eegInput;
+	public GUIText scoreText;
 	public PipeSpawning pipeSpawning;
 	public AutoPilot autoPilot;
 
 	private FlappyController flappyController;
 	private Vector3 flappySize;
 	private Vector3 pipeSize;
+	private int score;
 
 	void Start () {
 		flappyController = flappy.GetComponent<FlappyController> ();
 		flappySize = flappy.GetComponent<SpriteRenderer> ().bounds.size;
 		pipeSize = pipeSpawning.pipe.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer> ().bounds.size;
 		EegInput.OnBlink += JumpFlappy;
+		Scorer.OnScore += IncreaseScore;
+		scoreText.text = "0";
 
 		StartCoroutine (SpawnPipes());
 	}
@@ -66,6 +70,11 @@ public class GameController : MonoBehaviour {
 			}
 		}
 		return nearestPipe;
+	}
+
+	private void IncreaseScore() {
+		score++;
+		scoreText.text = score.ToString ();
 	}
 }
 
