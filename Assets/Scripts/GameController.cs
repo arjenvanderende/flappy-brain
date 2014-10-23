@@ -45,23 +45,26 @@ public class GameController : MonoBehaviour {
 
 		EegInput.OnBlink += JumpFlappy;
 		Scorer.OnScore += IncreaseScore;
+		GameOverTrigger.OnGameOver += StartGameOver;
 
 		StartCoroutine (SpawnPipes());
 	}
 
 	private void StartGameOver() {
 		gameOverScreen.SetActive (true);
+		flappy.SetActive (false);
 		gameState = GameState.TitleScreen;
 
 		EegInput.OnBlink -= JumpFlappy;
 		Scorer.OnScore -= IncreaseScore;
+		GameOverTrigger.OnGameOver -= StartGameOver;
 	}
 
 	private IEnumerator SpawnPipes () {
 		float delayBetweenPipes = pipeSpawning.delayBetweenPipes;
 
 		yield return new WaitForSeconds (pipeSpawning.delayBeforeStart);
-		while (true) {
+		while (gameState == GameState.Playing) {
 			// Spawn pipes in wave
 			for (int i = 0; i < pipeSpawning.pipesPerWave; i++)
 			{
