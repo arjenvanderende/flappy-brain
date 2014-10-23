@@ -45,7 +45,7 @@ GameObject:
   - 61: {fileID: 6100000}
   - 61: {fileID: 6100002}
   - 114: {fileID: 11400002}
-  - 61: {fileID: 6100004}
+  - 68: {fileID: 6800000}
   m_Layer: 0
   m_Name: Pipe
   m_TagString: Pipe
@@ -128,8 +128,8 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_Size: {x: 25, y: 150}
   m_Center: {x: 0, y: -100}
---- !u!61 &6100004
-BoxCollider2D:
+--- !u!68 &6800000
+EdgeCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -137,8 +137,9 @@ BoxCollider2D:
   m_Enabled: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Size: {x: 10, y: 50}
-  m_Center: {x: 5, y: 0}
+  m_Points:
+  - {x: 0, y: -24.5}
+  - {x: 0, y: 24.5}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
