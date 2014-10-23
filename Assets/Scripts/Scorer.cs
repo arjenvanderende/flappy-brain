@@ -6,8 +6,8 @@ public class Scorer : MonoBehaviour {
 	public delegate void ScoreEvent();
 	public static event ScoreEvent OnScore;
 
-	void OnTriggerExit2D () {
-		if (OnScore != null) {
+	void OnTriggerExit2D (Collider2D other) {
+		if (other.tag == "Player" && OnScore != null) {
 			OnScore.Invoke();
 		}
 	}
