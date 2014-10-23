@@ -785,9 +785,13 @@ MonoBehaviour:
   pipeSpawning:
     pipe: {fileID: 100004, guid: 2a2fb9fe963644e47822fb386c904ba8, type: 2}
     spawn: {fileID: 603674922}
-    delay: 1.5
     heightBetweenPipes: 50
     heightRange: 45
+    pipesPerWave: 5
+    delayBetweenWaves: 1
+    delayBetweenPipes: 2
+    delayDecreaseAfterWave: .100000001
+    minimumDelayBetweenPipes: 1
   autoPilot:
     defaultTargetHeight: 80
     mode: 0

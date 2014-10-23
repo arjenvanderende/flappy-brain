@@ -28,12 +28,22 @@ public class GameController : MonoBehaviour {
 	}
 
 	private IEnumerator SpawnPipes () {
-		yield return new WaitForSeconds (pipeSpawning.delay);
+		float delayBetweenPipes = pipeSpawning.delayBetweenPipes;
 
+		yield return new WaitForSeconds (pipeSpawning.delayBeforeStart);
 		while (true) {
-			Vector3 pipeSpawnPosition = pipeSpawning.spawn.position + new Vector3(0, Random.Range(-pipeSpawning.heightRange, pipeSpawning.heightRange), 0);
-			Instantiate(pipeSpawning.pipe, pipeSpawnPosition, Quaternion.identity);
-			yield return new WaitForSeconds (pipeSpawning.delay);
+			// Spawn pipes in wave
+			for (int i = 0; i < pipeSpawning.pipesPerWave; i++)
+			{
+				Vector3 pipeSpawnPosition = pipeSpawning.spawn.position + new Vector3(0, Random.Range(-pipeSpawning.heightRange, pipeSpawning.heightRange), 0);
+				Instantiate(pipeSpawning.pipe, pipeSpawnPosition, Quaternion.identity);
+				yield return new WaitForSeconds (delayBetweenPipes);
+			}
+
+			// Increase difficulty and wait for next wave
+			delayBetweenPipes -= pipeSpawning.delayDecreaseAfterWave;
+			delayBetweenPipes = Mathf.Max(delayBetweenPipes, pipeSpawning.minimumDelayBetweenPipes);
+			yield return new WaitForSeconds (pipeSpawning.delayBetweenWaves);
 		}
 	}
 
@@ -86,9 +96,17 @@ public class PipeSpawning {
 
 	public GameObject pipe;
 	public Transform spawn;
-	public float delay;
 	public float heightBetweenPipes;
 	public int heightRange;
+
+	public float delayBeforeStart;
+
+	public int pipesPerWave;
+	public float delayBetweenWaves;
+
+	public float delayBetweenPipes;
+	public float delayDecreaseAfterWave;
+	public float minimumDelayBetweenPipes;
 }
 
 [Serializable]
