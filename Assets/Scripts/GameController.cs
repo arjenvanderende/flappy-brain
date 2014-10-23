@@ -9,6 +9,7 @@ public class GameController : MonoBehaviour {
 	public EegInput eegInput;
 	public GUIText scoreText;
 	public GameObject titleScreen;
+	public GameObject gameOverScreen;
 	public PipeSpawning pipeSpawning;
 	public AutoPilot autoPilot;
 
@@ -30,11 +31,9 @@ public class GameController : MonoBehaviour {
 	private void StartTitleScreen() {
 		titleScreen.SetActive (true);
 		flappy.SetActive (false);
+		gameOverScreen.SetActive (false);
 		scoreText.gameObject.SetActive (false);
 		gameState = GameState.TitleScreen;
-
-		EegInput.OnBlink -= JumpFlappy;
-		Scorer.OnScore -= IncreaseScore;
 	}
 
 	private void StartGame() {
@@ -48,6 +47,14 @@ public class GameController : MonoBehaviour {
 		Scorer.OnScore += IncreaseScore;
 
 		StartCoroutine (SpawnPipes());
+	}
+
+	private void StartGameOver() {
+		gameOverScreen.SetActive (true);
+		gameState = GameState.TitleScreen;
+
+		EegInput.OnBlink -= JumpFlappy;
+		Scorer.OnScore -= IncreaseScore;
 	}
 
 	private IEnumerator SpawnPipes () {
