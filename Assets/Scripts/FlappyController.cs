@@ -5,8 +5,13 @@ public class FlappyController : MonoBehaviour {
 
 	public float forwardVelocity;
 	public float impulse;
-	
+
+	private Vector3 spawnPosition;
 	private bool jump = false;
+
+	void Start() {
+		spawnPosition = transform.position;
+	}
 
 	void Update () {
 		Vector2 forward = new Vector2 (forwardVelocity, 0);
@@ -32,6 +37,11 @@ public class FlappyController : MonoBehaviour {
 		Vector2 force = new Vector2 (0, impulse) - gameObject.rigidbody2D.velocity;
 		Vector2 amplifiedForce = force * gameObject.rigidbody2D.mass;
 		gameObject.rigidbody2D.AddForce(amplifiedForce, ForceMode2D.Impulse);
+	}
+
+	public void Respawn() {
+		jump = false;
+		transform.position = spawnPosition;
 	}
 
 	public void JumpEvent() {

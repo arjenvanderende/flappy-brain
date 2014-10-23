@@ -19,6 +19,7 @@ public class GameController : MonoBehaviour {
 	private int score;
 
 	private GameState gameState;
+	private bool spawingPipes;
 
 	void Start () {
 		flappyController = flappy.GetComponent<FlappyController> ();
@@ -30,6 +31,7 @@ public class GameController : MonoBehaviour {
 
 	private void StartTitleScreen() {
 		titleScreen.SetActive (true);
+		gameOverScreen.SetActive (false);
 		flappy.SetActive (false);
 		gameOverScreen.SetActive (false);
 		scoreText.gameObject.SetActive (false);
@@ -41,6 +43,7 @@ public class GameController : MonoBehaviour {
 		flappy.SetActive (true);
 		scoreText.gameObject.SetActive (true);
 		scoreText.text = "0";
+		flappyController.Respawn ();
 		gameState = GameState.Playing;
 
 		EegInput.OnBlink += JumpFlappy;
@@ -53,7 +56,7 @@ public class GameController : MonoBehaviour {
 	private void StartGameOver() {
 		gameOverScreen.SetActive (true);
 		flappy.SetActive (false);
-		gameState = GameState.TitleScreen;
+		gameState = GameState.GameOver;
 
 		EegInput.OnBlink -= JumpFlappy;
 		Scorer.OnScore -= IncreaseScore;
@@ -61,23 +64,29 @@ public class GameController : MonoBehaviour {
 	}
 
 	private IEnumerator SpawnPipes () {
+		spawingPipes = true;
 		float delayBetweenPipes = pipeSpawning.delayBetweenPipes;
 
 		yield return new WaitForSeconds (pipeSpawning.delayBeforeStart);
 		while (gameState == GameState.Playing) {
 			// Spawn pipes in wave
-			for (int i = 0; i < pipeSpawning.pipesPerWave; i++)
+			for (int i = 0; i < pipeSpawning.pipesPerWave && gameState == GameState.Playing; i++)
 			{
 				Vector3 pipeSpawnPosition = pipeSpawning.spawn.position + new Vector3(0, Random.Range(-pipeSpawning.heightRange, pipeSpawning.heightRange), 0);
 				Instantiate(pipeSpawning.pipe, pipeSpawnPosition, Quaternion.identity);
 				yield return new WaitForSeconds (delayBetweenPipes);
 			}
 
-			// Increase difficulty and wait for next wave
-			delayBetweenPipes -= pipeSpawning.delayDecreaseAfterWave;
-			delayBetweenPipes = Mathf.Max(delayBetweenPipes, pipeSpawning.minimumDelayBetweenPipes);
-			yield return new WaitForSeconds (pipeSpawning.delayBetweenWaves);
+			if (gameState == GameState.Playing) {
+				// Increase difficulty and wait for next wave
+				delayBetweenPipes -= pipeSpawning.delayDecreaseAfterWave;
+				delayBetweenPipes = Mathf.Max(delayBetweenPipes, pipeSpawning.minimumDelayBetweenPipes);
+				yield return new WaitForSeconds (pipeSpawning.delayBetweenWaves);
+			} else {
+				yield return new WaitForSeconds (pipeSpawning.showTitleScreenAfterGameOverDelay);
+			}
 		}
+		spawingPipes = false;
 	}
 
 	void Update() {
@@ -100,9 +109,15 @@ public class GameController : MonoBehaviour {
 					flappyController.JumpEvent ();
 				}
 				break;
+			case GameState.GameOver:
+				if (!spawingPipes)
+				{
+					StartTitleScreen();
+				}
+				break;
 		}
 	}
-
+		
 	private void Autopilot(float targetHeight) {
 		bool shouldJump = flappy.rigidbody2D.position.y < targetHeight;
 		bool isConcentrated = autoPilot.mode == AutoPilotMode.EegConcentration && eegInput.IsConcentrated ();
@@ -153,6 +168,8 @@ public class PipeSpawning {
 	public float delayBetweenPipes;
 	public float delayDecreaseAfterWave;
 	public float minimumDelayBetweenPipes;
+
+	public float showTitleScreenAfterGameOverDelay;
 }
 
 [Serializable]
@@ -174,5 +191,6 @@ public enum AutoPilotMode {
 
 public enum GameState {
 	TitleScreen,
-	Playing
+	Playing,
+	GameOver
 }

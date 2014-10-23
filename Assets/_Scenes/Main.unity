@@ -446,6 +446,35 @@ Transform:
   - {fileID: 50651509}
   m_Father: {fileID: 0}
   m_RootOrder: 2
+--- !u!1 &639901891
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 639901892}
+  m_Layer: 0
+  m_Name: TitleScreen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &639901892
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 639901891}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1727865921}
+  - {fileID: 1366749663}
+  m_Father: {fileID: 927957578}
+  m_RootOrder: 0
 --- !u!1 &646238610
 GameObject:
   m_ObjectHideFlags: 0
@@ -576,7 +605,7 @@ GameObject:
   - 4: {fileID: 750697906}
   - 212: {fileID: 750697905}
   m_Layer: 0
-  m_Name: Game Over
+  m_Name: GameOverText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -614,63 +643,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 110, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 805779270}
-  m_RootOrder: 0
---- !u!1 &759148154
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 759148155}
-  m_Layer: 0
-  m_Name: TitleScreen
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &759148155
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 759148154}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1727865921}
-  - {fileID: 1366749663}
-  m_Father: {fileID: 927957578}
-  m_RootOrder: 0
---- !u!1 &805779269
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 805779270}
-  m_Layer: 0
-  m_Name: GameOverScreen
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &805779270
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 805779269}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 750697906}
   m_Father: {fileID: 927957578}
   m_RootOrder: 2
 --- !u!1 &927957577
@@ -698,9 +670,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 759148155}
+  - {fileID: 639901892}
   - {fileID: 748999750}
-  - {fileID: 805779270}
+  - {fileID: 750697906}
   m_Father: {fileID: 0}
   m_RootOrder: 3
 --- !u!1 &965029841
@@ -1002,8 +974,8 @@ MonoBehaviour:
   flappy: {fileID: 50651507}
   eegInput: {fileID: 1358357678}
   scoreText: {fileID: 748999749}
-  titleScreen: {fileID: 759148154}
-  gameOverScreen: {fileID: 805779269}
+  titleScreen: {fileID: 639901891}
+  gameOverScreen: {fileID: 750697904}
   pipeSpawning:
     pipe: {fileID: 100004, guid: 2a2fb9fe963644e47822fb386c904ba8, type: 2}
     spawn: {fileID: 603674922}
@@ -1015,6 +987,7 @@ MonoBehaviour:
     delayBetweenPipes: 2
     delayDecreaseAfterWave: .100000001
     minimumDelayBetweenPipes: 1
+    showTitleScreenAfterGameOverDelay: 5
   autoPilot:
     defaultTargetHeight: 80
     mode: 0
@@ -1041,10 +1014,10 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1366749662}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 60, z: 10}
+  m_LocalPosition: {x: 0, y: 60, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 759148155}
+  m_Father: {fileID: 639901892}
   m_RootOrder: 1
 --- !u!212 &1366749664
 SpriteRenderer:
@@ -1169,10 +1142,10 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1727865919}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 110, z: 10}
+  m_LocalPosition: {x: 0, y: 110, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 759148155}
+  m_Father: {fileID: 639901892}
   m_RootOrder: 0
 --- !u!1 &1757821348
 GameObject:
