@@ -8,14 +8,7 @@ public class FlappyController : MonoBehaviour {
 	
 	private bool jump = false;
 
-	void Start () {
-	}
-
-        void Update () {
-		if (Input.GetButton ("Fire1")) {
-			JumpEvent();
-		}
-
+	void Update () {
 		Vector2 forward = new Vector2 (forwardVelocity, 0);
 		Vector2 direction = forward + gameObject.rigidbody2D.velocity;
 		float angle = Vector2.Angle (forward, direction);

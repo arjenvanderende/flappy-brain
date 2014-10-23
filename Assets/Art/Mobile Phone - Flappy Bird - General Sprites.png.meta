@@ -131,12 +131,12 @@ TextureImporter:
     - name: Instructions
       rect:
         serializedVersion: 2
-        x: 172
+        x: 152
         y: 85
-        width: 38
-        height: 49
-      alignment: 0
-      pivot: {x: .5, y: .5}
+        width: 46
+        height: 52
+      alignment: 9
+      pivot: {x: .206734031, y: .576780617}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: Ground
       rect:
@@ -183,7 +183,7 @@ TextureImporter:
         serializedVersion: 2
         x: 146
         y: 61
-        width: 96
+        width: 104
         height: 22
       alignment: 0
       pivot: {x: .5, y: .5}

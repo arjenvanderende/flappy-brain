@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour {
 	public GameObject flappy;
 	public EegInput eegInput;
 	public GUIText scoreText;
+	public GameObject titleScreen;
 	public PipeSpawning pipeSpawning;
 	public AutoPilot autoPilot;
 
@@ -16,13 +17,35 @@ public class GameController : MonoBehaviour {
 	private Vector3 pipeSize;
 	private int score;
 
+	private GameState gameState;
+
 	void Start () {
 		flappyController = flappy.GetComponent<FlappyController> ();
 		flappySize = flappy.GetComponent<SpriteRenderer> ().bounds.size;
 		pipeSize = pipeSpawning.pipe.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer> ().bounds.size;
+
+		StartTitleScreen ();
+	}
+
+	private void StartTitleScreen() {
+		titleScreen.SetActive (true);
+		flappy.SetActive (false);
+		scoreText.gameObject.SetActive (false);
+		gameState = GameState.TitleScreen;
+
+		EegInput.OnBlink -= JumpFlappy;
+		Scorer.OnScore -= IncreaseScore;
+	}
+
+	private void StartGame() {
+		titleScreen.SetActive (false);
+		flappy.SetActive (true);
+		scoreText.gameObject.SetActive (true);
+		scoreText.text = "0";
+		gameState = GameState.Playing;
+
 		EegInput.OnBlink += JumpFlappy;
 		Scorer.OnScore += IncreaseScore;
-		scoreText.text = "0";
 
 		StartCoroutine (SpawnPipes());
 	}
@@ -48,12 +71,25 @@ public class GameController : MonoBehaviour {
 	}
 
 	void Update() {
-		if (autoPilot.Enabled) {
-			GameObject pipe = GetNextPipe ();
-			float targetHeight = pipe != null 
-				? pipe.transform.position.y - (pipeSpawning.heightBetweenPipes / 2) + (flappySize.y)
-				: autoPilot.defaultTargetHeight;
-			Autopilot (targetHeight);
+		switch (gameState) {
+			case GameState.TitleScreen:
+				if (Input.GetButton ("Fire1")) {
+					StartGame();
+				}
+				break;
+			case GameState.Playing:
+				if (autoPilot.Enabled) {
+					GameObject pipe = GetNextPipe ();
+					float targetHeight = pipe != null 
+						? pipe.transform.position.y - (pipeSpawning.heightBetweenPipes / 2) + (flappySize.y)
+						: autoPilot.defaultTargetHeight;
+					Autopilot (targetHeight);
+				}
+
+				if (Input.GetButton ("Fire1")) {
+					flappyController.JumpEvent ();
+				}
+				break;
 		}
 	}
 
@@ -124,4 +160,9 @@ public enum AutoPilotMode {
 	Automatic,
 	EegConcentration,
 	Disabled
+}
+
+public enum GameState {
+	TitleScreen,
+	Playing
 }
