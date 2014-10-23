@@ -651,7 +651,11 @@ MonoBehaviour:
     pipe: {fileID: 100004, guid: 2a2fb9fe963644e47822fb386c904ba8, type: 2}
     spawn: {fileID: 603674922}
     delay: 1.5
+    heightBetweenPipes: 50
     heightRange: 50
+  autoPilot:
+    defaultTargetHeight: 80
+    ignoreEegConcentration: 1
 --- !u!1 &1562791536
 GameObject:
   m_ObjectHideFlags: 0

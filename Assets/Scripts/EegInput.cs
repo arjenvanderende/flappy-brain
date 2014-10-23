@@ -48,14 +48,10 @@ public class EegInput : MonoBehaviour {
 
 	void BlinkMessage(OscMessage message) {
 		if (message.Values.Count == 1 && (int)message.Values [0] == 1) {
-			BlinkEvent();
+			Debug.Log ("Blinked!");
+			if (OnBlink != null)
+				OnBlink.Invoke ();
 		}
-	}
-
-	void BlinkEvent() {
-		Debug.Log ("Blinked!");
-		if (OnBlink != null)
-			OnBlink.Invoke ();
 	}
 
 	void StatusIndicator(OscMessage message) {

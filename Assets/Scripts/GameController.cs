@@ -8,11 +8,16 @@ public class GameController : MonoBehaviour {
 	public GameObject flappy;
 	public EegInput eegInput;
 	public PipeSpawning pipeSpawning;
+	public AutoPilot autoPilot;
 
 	private FlappyController flappyController;
+	private Vector3 flappySize;
+	private Vector3 pipeSize;
 
 	void Start () {
 		flappyController = flappy.GetComponent<FlappyController> ();
+		flappySize = flappy.GetComponent<SpriteRenderer> ().bounds.size;
+		pipeSize = pipeSpawning.pipe.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer> ().bounds.size;
 		EegInput.OnBlink += JumpFlappy;
 
 		StartCoroutine (SpawnPipes());
@@ -29,18 +34,38 @@ public class GameController : MonoBehaviour {
 	}
 
 	void Update() {
-		Autopilot ();
+		GameObject pipe = GetNextPipe ();
+		float targetHeight = pipe != null 
+			? pipe.transform.position.y - (pipeSpawning.heightBetweenPipes / 2) + (flappySize.y)
+			: autoPilot.defaultTargetHeight;
+		Autopilot (targetHeight);
 	}
 
-	private void Autopilot() {
-		Single currentHeight = flappy.rigidbody2D.position.y;
-		Single targetHeight = 100;
-		if (currentHeight - targetHeight < 0)
+	private void Autopilot(float targetHeight) {
+		bool shouldJump = flappy.rigidbody2D.position.y < targetHeight;
+		bool isConcentrated = eegInput.IsConcentrated() || autoPilot.ignoreEegConcentration;
+		if (shouldJump && isConcentrated) {
 			JumpFlappy ();
+		}
 	}
 
 	private void JumpFlappy() {
 		flappyController.JumpEvent ();
+	}
+
+	private GameObject GetNextPipe() {
+		GameObject[] pipes = GameObject.FindGameObjectsWithTag ("Pipe");
+		GameObject nearestPipe = null;
+		for (int i = 0; i < pipes.Length; i ++) {
+			GameObject pipe = pipes [i];
+			if (flappy.transform.position.x - (flappySize.x / 2) < pipe.transform.position.x + (pipeSize.x / 2)) {
+				if (nearestPipe == null)
+					nearestPipe = pipe;
+				else if (nearestPipe.transform.position.x > pipe.transform.position.x)
+					nearestPipe = pipe;
+			}
+		}
+		return nearestPipe;
 	}
 }
 
@@ -50,5 +75,13 @@ public class PipeSpawning {
 	public GameObject pipe;
 	public Transform spawn;
 	public float delay;
+	public float heightBetweenPipes;
 	public int heightRange;
+}
+
+[Serializable]
+public class AutoPilot {
+
+	public float defaultTargetHeight;
+	public bool ignoreEegConcentration;
 }
