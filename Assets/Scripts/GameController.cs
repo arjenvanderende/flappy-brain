@@ -43,6 +43,7 @@ public class GameController : MonoBehaviour {
 		flappy.SetActive (true);
 		scoreText.gameObject.SetActive (true);
 		scoreText.text = "0";
+		score = 0;
 		flappyController.Respawn ();
 		gameState = GameState.Playing;
 
