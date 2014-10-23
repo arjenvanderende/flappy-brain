@@ -1,15 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
+using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour {
 
+	public GameObject flappy;
+	public EegInput eegInput;
 	public PipeSpawning pipeSpawning;
 
+	private FlappyController flappyController;
+
 	void Start () {
+		flappyController = flappy.GetComponent<FlappyController> ();
+		EegInput.OnBlink += JumpFlappy;
+
 		StartCoroutine (SpawnPipes());
 	}
 
-	IEnumerator SpawnPipes () {
+	private IEnumerator SpawnPipes () {
 		yield return new WaitForSeconds (pipeSpawning.delay);
 
 		while (true) {
@@ -18,9 +27,24 @@ public class GameController : MonoBehaviour {
 			yield return new WaitForSeconds (pipeSpawning.delay);
 		}
 	}
+
+	void Update() {
+		Autopilot ();
+	}
+
+	private void Autopilot() {
+		Single currentHeight = flappy.rigidbody2D.position.y;
+		Single targetHeight = 100;
+		if (currentHeight - targetHeight < 0)
+			JumpFlappy ();
+	}
+
+	private void JumpFlappy() {
+		flappyController.JumpEvent ();
+	}
 }
 
-[System.Serializable]
+[Serializable]
 public class PipeSpawning {
 
 	public GameObject pipe;

@@ -598,7 +598,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d5056224c125de4dacb997e739b5d3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flappy: {fileID: 50651507}
 --- !u!114 &1358357679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -646,6 +645,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d8bf1f69760a4e9da1c3ebb5bb97d59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flappy: {fileID: 50651507}
+  eegInput: {fileID: 1358357678}
   pipeSpawning:
     pipe: {fileID: 100004, guid: 2a2fb9fe963644e47822fb386c904ba8, type: 2}
     spawn: {fileID: 603674922}

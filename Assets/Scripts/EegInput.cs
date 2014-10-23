@@ -6,39 +6,34 @@ using System;
 
 public class EegInput : MonoBehaviour {
 
-	UDPPacketIO udp;
-	Osc handler;
+	private UDPPacketIO udp;
+	private Osc handler;
 
-	Single beta;
-	Single[] betaArray = new Single[20]; 
-	Single smoothedBeta;
-	int betaCounter = 0;
-	Single concentrationBase;
-	Single[] concArray = new Single[100];
-	int concCounter = 0;
-	Single acceptError = (float)0.2;
+	private Single beta;
+	private Single[] betaArray = new Single[20]; 
+	private Single smoothedBeta;
+	private int betaCounter = 0;
+	private Single concentrationBase;
+	private Single[] concArray = new Single[100];
+	private int concCounter = 0;
+	private Single acceptError = (float)0.2;
 
-	private FlappyController flappyController;
-	public GameObject flappy;
-
-	//bool started = false;
+	public delegate void BlinkAction ();
+	public static event BlinkAction OnBlink;
 
 	void Start () {
-		flappyController = flappy.GetComponent<FlappyController> ();
-
-		udp = GetComponent<UDPPacketIO>();
-		udp.init("127.0.0.1", 3001, 3000);
+		udp = GetComponent<UDPPacketIO> ();
+		udp.init ("127.0.0.1", 3001, 3000);
 		
-		handler = GetComponent<Osc>();
-		handler.init(udp);
-		handler.SetAddressHandler("/muse/dsp/elements/beta", BetaMessage);
-		handler.SetAddressHandler("/muse/dsp/blink", BlinkMessage);
-		handler.SetAddressHandler("/muse/dsp/status_indicator", StatusIndicator);
+		handler = GetComponent<Osc> ();
+		handler.init (udp);
+		handler.SetAddressHandler ("/muse/dsp/elements/beta", BetaMessage);
+		handler.SetAddressHandler ("/muse/dsp/blink", BlinkMessage);
+		handler.SetAddressHandler ("/muse/dsp/status_indicator", StatusIndicator);
 
-		InvokeRepeating("LogBeta", 3, 2);
-		InvokeRepeating("UpdateSmoothedBeta", 3, (float)0.1);
+		InvokeRepeating ("LogBeta", 3, 2);
+		InvokeRepeating ("UpdateSmoothedBeta", 3, (float)0.1);
 		InvokeRepeating ("UpdateBaseLevel", 3, (float)0.1);
-		InvokeRepeating ("Autopilot", 1, (float)0.1);
 
 		concentrationBase = (Single)0.10;
 	}
@@ -58,25 +53,16 @@ public class EegInput : MonoBehaviour {
 	}
 
 	void BlinkEvent() {
-		flappyController.JumpEvent();
 		Debug.Log ("Blinked!");
+		if (OnBlink != null)
+			OnBlink.Invoke ();
 	}
 
 	void StatusIndicator(OscMessage message) {
 		Debug.Log (Osc.OscMessageToString (message));
 	}
-
-	void Update() {
-	}
-
-	void Autopilot() {
-		Single currentHeight = flappy.rigidbody2D.position.y;
-		Single targetHeight = 100;
-		if (currentHeight - targetHeight < 0 && IsConcentrated())
-			flappyController.JumpEvent ();
-	}
-
-	bool IsConcentrated() {
+	
+	public bool IsConcentrated() {
 		return smoothedBeta > (concentrationBase - concentrationBase * acceptError);
 	}
 
