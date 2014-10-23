@@ -38,17 +38,20 @@ public class GameController : MonoBehaviour {
 	}
 
 	void Update() {
-		GameObject pipe = GetNextPipe ();
-		float targetHeight = pipe != null 
-			? pipe.transform.position.y - (pipeSpawning.heightBetweenPipes / 2) + (flappySize.y)
-			: autoPilot.defaultTargetHeight;
-		Autopilot (targetHeight);
+		if (autoPilot.Enabled) {
+			GameObject pipe = GetNextPipe ();
+			float targetHeight = pipe != null 
+				? pipe.transform.position.y - (pipeSpawning.heightBetweenPipes / 2) + (flappySize.y)
+				: autoPilot.defaultTargetHeight;
+			Autopilot (targetHeight);
+		}
 	}
 
 	private void Autopilot(float targetHeight) {
 		bool shouldJump = flappy.rigidbody2D.position.y < targetHeight;
-		bool isConcentrated = eegInput.IsConcentrated() || autoPilot.ignoreEegConcentration;
-		if (shouldJump && isConcentrated) {
+		bool isConcentrated = autoPilot.mode == AutoPilotMode.EegConcentration && eegInput.IsConcentrated ();
+		bool autoPilotAllowed = autoPilot.mode == AutoPilotMode.Automatic || isConcentrated;
+		if (shouldJump && autoPilotAllowed) {
 			JumpFlappy ();
 		}
 	}
@@ -92,5 +95,15 @@ public class PipeSpawning {
 public class AutoPilot {
 
 	public float defaultTargetHeight;
-	public bool ignoreEegConcentration;
+	public AutoPilotMode mode;
+
+	public bool Enabled { 
+		get { return mode != AutoPilotMode.Disabled; }
+	}
+}
+
+public enum AutoPilotMode { 
+	Automatic,
+	EegConcentration,
+	Disabled
 }
