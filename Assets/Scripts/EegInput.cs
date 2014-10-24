@@ -26,6 +26,8 @@ public class EegInput : MonoBehaviour {
 	private DateTime prevBlinkTime = DateTime.UtcNow;
 	private TimeSpan doubleBlinkRate = TimeSpan.FromMilliseconds (200);
 
+	public enum ConcentrationLevel { Red, Orange, Green };
+
 	void Start () {
 		concentrationBase = 0.10f;
 		doubleBlinkRate = TimeSpan.FromMilliseconds (doubleBlinkRateInMilliseconds);
@@ -81,8 +83,8 @@ public class EegInput : MonoBehaviour {
 	}
 
 	public ConcentrationLevel GetConcentrationLevel() {
-		float levelGreen = concentrationBase * 1.10f; // +10%
-		float levelOrange = concentrationBase * 0.90f; // -10%
+		Single levelGreen = concentrationBase * (Single)1.10; // +10%
+		Single levelOrange = concentrationBase * (Single)0.90; // -10%
 		if (smoothedBeta > levelGreen) return ConcentrationLevel.Green;
 		if (smoothedBeta > levelOrange) return ConcentrationLevel.Orange;
 		return ConcentrationLevel.Red;
@@ -145,5 +147,3 @@ public class EegInput : MonoBehaviour {
 		Debug.Log ("Base: " + concentrationBase + " Beta:" + smoothedBeta + " (" + (smoothedBeta - concentrationBase) + ")");
 	}
 }
-
-public enum ConcentrationLevel { Red, Orange, Green };
