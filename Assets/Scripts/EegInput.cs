@@ -28,6 +28,8 @@ public class EegInput : MonoBehaviour {
 	private bool signalQualityGood = false;
 	private bool signalQualityChanged = false;
 
+	private bool blinked = false;
+	private bool doubleBlinked = false;
 	private DateTime prevBlinkTime = DateTime.UtcNow;
 	private TimeSpan doubleBlinkRate = TimeSpan.FromMilliseconds (200);
 
@@ -55,6 +57,16 @@ public class EegInput : MonoBehaviour {
 			OnSignalQualityChanged.Invoke(signalQualityGood);
 			signalQualityChanged = false;
 		}
+		if (blinked && OnBlink != null) {
+			Debug.Log ("Blinked!");
+			OnBlink.Invoke ();
+			blinked = false;
+		}
+		if (doubleBlinked && OnDoubleBlink != null) {
+			Debug.Log ("Double blinked!");
+			OnDoubleBlink.Invoke ();
+			doubleBlinked = false;
+		}
 	}
 
 	void BetaMessage(OscMessage message) {
@@ -66,22 +78,12 @@ public class EegInput : MonoBehaviour {
 	}
 
 	void BlinkMessage(OscMessage message) {
-		bool blinked = message.Values.Count == 1 && (int)message.Values [0] == 1;
+		blinked = message.Values.Count == 1 && (int)message.Values [0] == 1;
 		if (blinked) {
-			Debug.Log ("Blinked!");
-			if (OnBlink != null)
-				OnBlink.Invoke ();
-
 			DateTime now = DateTime.UtcNow;
 			TimeSpan doubleBlinkDuration = now - prevBlinkTime;
-			bool doubleBlinked = doubleBlinkDuration < doubleBlinkRate;
+			doubleBlinked = doubleBlinkDuration < doubleBlinkRate;
 			prevBlinkTime = now;
-
-			if (doubleBlinked) {
-				Debug.Log ("Double blinked!");
-				if (OnDoubleBlink != null)
-					OnDoubleBlink.Invoke ();
-			}
 		}
 	}
 	
