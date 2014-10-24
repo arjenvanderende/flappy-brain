@@ -42,7 +42,7 @@ public class EegInput : MonoBehaviour {
 		handler.SetAddressHandler ("/muse/dsp/blink", BlinkMessage);
 		handler.SetAddressHandler ("/muse/dsp/elements/is_good", IsGoodMessage);
 
-		InvokeRepeating ("LogBeta", 3, 2);
+		InvokeRepeating ("Log", 3, 2);
 		InvokeRepeating ("UpdateSmoothedBeta", 3, 0.1f);
 		InvokeRepeating ("UpdateBaseLevel", 3, 0.1f);
 
