@@ -4,6 +4,7 @@ using System.Collections;
 public class FlappyController : MonoBehaviour {
 
 	public float forwardVelocity;
+	public float correctionForce;
 	public float impulse;
 
 	private Vector3 spawnPosition;
@@ -28,6 +29,10 @@ public class FlappyController : MonoBehaviour {
 		if (jump) {
 			Jump();
 			jump = false;
+		}
+
+		if (transform.position.x < spawnPosition.x) {
+			gameObject.rigidbody2D.AddForce (new Vector2 (correctionForce, 0), ForceMode2D.Force);
 		}
 	}
 
