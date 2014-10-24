@@ -148,6 +148,10 @@ public class EegInput : MonoBehaviour {
 	 * Smooth samples over all betaArray samples
 	 */
 	void UpdateSmoothedBeta(){
+		if (!signalQualityGood) {
+			return;
+		}
+
 		betaArray [betaCounter] = beta;
 		Single result = 0;
 		foreach (Single value in betaArray) {
@@ -166,6 +170,10 @@ public class EegInput : MonoBehaviour {
 	 * concentrationBase, then update with higher value
 	 */
 	void UpdateBaseLevel() {
+		if (!signalQualityGood) {
+			return;
+		}
+
 		concArray [concCounter] = smoothedBeta;
 		Single result = 0;
 		foreach (Single value in concArray) {

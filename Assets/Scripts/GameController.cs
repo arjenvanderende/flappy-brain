@@ -176,17 +176,36 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void UpdateSignalQualityText(bool isGood) {
-		if (isGood) {
-			signalQualityText.color = new Color(0.45703125f, 0.7578125f, 0.05859375f);
-			signalQualityText.text = "Good Quality";
-		} else {
-			signalQualityText.color = new Color(0.94140625f, 0.17578125f, 0.10546875f);
-			signalQualityText.text = "Please adjust headband";
-		}
+		UpdateMessage (isGood, eegInput.GetConcentrationLevel ());
 	}
 
 	private void UpdateConcentrationLevel(ConcentrationLevel level) {
-		Debug.LogWarning ("Concentration level = " + level);
+		UpdateMessage (eegInput.IsSignalQualityGood (), level);
+	}
+
+	private void UpdateMessage(bool isEegSignalGood, ConcentrationLevel level) {
+		Color green = new Color (0.45703125f, 0.7578125f, 0.05859375f);
+		Color red = new Color (0.94140625f, 0.17578125f, 0.10546875f);
+
+		if (isEegSignalGood) {
+			switch (level) {
+			case ConcentrationLevel.Green:
+				signalQualityText.color = green;
+				signalQualityText.text = "You are a Zen-master";
+				break;
+			case ConcentrationLevel.Orange:
+				signalQualityText.color = Color.yellow;
+				signalQualityText.text = "Focus! You can do it!";
+				break;
+			default:
+				signalQualityText.color = red;
+				signalQualityText.text = "You lost it! Blink! Blink!";
+				break;
+			}
+		} else {
+			signalQualityText.color = red;
+			signalQualityText.text = "Please adjust headband";
+		}
 	}
 }
 
