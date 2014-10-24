@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour {
 	public GameObject flappy;
 	public EegInput eegInput;
 	public GUIText scoreText;
+	public GUIText signalQualityText;
 	public GameObject titleScreen;
 	public GameObject gameOverScreen;
 	public PipeSpawning pipeSpawning;
@@ -30,7 +31,9 @@ public class GameController : MonoBehaviour {
 
 		EegInput.OnBlink += RegisterBlinked;
 		EegInput.OnDoubleBlink += RegisterDoubleBlinked;
+		EegInput.OnSignalQualityChanged += UpdateSignalQualityText;
 
+		UpdateSignalQualityText (eegInput.IsSignalQualityGood ());
 		StartTitleScreen ();
 	}
 
@@ -96,7 +99,8 @@ public class GameController : MonoBehaviour {
 	void Update() {
 		switch (gameState) {
 			case GameState.TitleScreen:
-				if (Input.GetButton ("Fire1") || doubleBlinked) {
+				bool userClicked = Input.GetButton ("Fire1") || doubleBlinked;
+				if (userClicked && eegInput.IsSignalQualityGood ()) {
 					StartGame();
 				}
 				break;
@@ -125,7 +129,7 @@ public class GameController : MonoBehaviour {
 		blinked = false;
 		doubleBlinked = false;
 	}
-		
+
 	private void Autopilot(float targetHeight) {
 		bool shouldJump = flappy.rigidbody2D.position.y < targetHeight;
 		bool isConcentrated = autoPilot.mode == AutoPilotMode.EegConcentration && eegInput.IsConcentrated ();
@@ -165,6 +169,16 @@ public class GameController : MonoBehaviour {
 
 	private void RegisterDoubleBlinked() {
 		doubleBlinked = true;
+	}
+
+	private void UpdateSignalQualityText(bool isGood) {
+		if (isGood) {
+			signalQualityText.color = new Color(0.45703125f, 0.7578125f, 0.05859375f);
+			signalQualityText.text = "Good Quality";
+		} else {
+			signalQualityText.color = new Color(0.94140625f, 0.17578125f, 0.10546875f);
+			signalQualityText.text = "Please adjust headband";
+		}
 	}
 }
 

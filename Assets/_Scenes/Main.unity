@@ -290,6 +290,57 @@ MonoBehaviour:
   range:
     enabled: 1
     minX: -154
+--- !u!1 &269859356
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 269859357}
+  - 132: {fileID: 269859358}
+  m_Layer: 0
+  m_Name: Eeg Signal Quality Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &269859357
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 269859356}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .5, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 927957578}
+  m_RootOrder: 3
+--- !u!132 &269859358
+GUIText:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 269859356}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Text: EEG Signal Quality Text
+  m_Anchor: 7
+  m_Alignment: 1
+  m_PixelOffset: {x: 0, y: 80}
+  m_LineSpacing: 1
+  m_TabSize: 4
+  m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Material: {fileID: 0}
+  m_FontSize: 30
+  m_FontStyle: 0
+  m_Color:
+    serializedVersion: 2
+    rgba: 4279222901
+  m_PixelCorrect: 1
+  m_RichText: 1
 --- !u!1 &339787537
 GameObject:
   m_ObjectHideFlags: 0
@@ -674,6 +725,7 @@ Transform:
   - {fileID: 639901892}
   - {fileID: 748999750}
   - {fileID: 750697906}
+  - {fileID: 269859357}
   m_Father: {fileID: 0}
   m_RootOrder: 3
 --- !u!1 &965029841
@@ -976,6 +1028,7 @@ MonoBehaviour:
   flappy: {fileID: 50651507}
   eegInput: {fileID: 1358357678}
   scoreText: {fileID: 748999749}
+  signalQualityText: {fileID: 269859358}
   titleScreen: {fileID: 639901891}
   gameOverScreen: {fileID: 750697904}
   pipeSpawning:
@@ -992,7 +1045,7 @@ MonoBehaviour:
     showTitleScreenAfterGameOverDelay: 5
   autoPilot:
     defaultTargetHeight: 80
-    mode: 2
+    mode: 1
 --- !u!1 &1366749662
 GameObject:
   m_ObjectHideFlags: 0
