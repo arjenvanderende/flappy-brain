@@ -32,6 +32,7 @@ public class GameController : MonoBehaviour {
 		EegInput.OnBlink += RegisterBlinked;
 		EegInput.OnDoubleBlink += RegisterDoubleBlinked;
 		EegInput.OnSignalQualityChanged += UpdateSignalQualityText;
+		EegInput.OnConcentrationLevelChanged += UpdateConcentrationLevel;
 
 		UpdateSignalQualityText (eegInput.IsSignalQualityGood ());
 		StartTitleScreen ();
@@ -58,6 +59,7 @@ public class GameController : MonoBehaviour {
 		Scorer.OnScore += IncreaseScore;
 		GameOverTrigger.OnGameOver += StartGameOver;
 
+		eegInput.StartTrainingConcentration ();
 		StartCoroutine (SpawnPipes());
 	}
 
@@ -68,6 +70,8 @@ public class GameController : MonoBehaviour {
 
 		Scorer.OnScore -= IncreaseScore;
 		GameOverTrigger.OnGameOver -= StartGameOver;
+
+		eegInput.Reset ();
 	}
 
 	private IEnumerator SpawnPipes () {
@@ -179,6 +183,10 @@ public class GameController : MonoBehaviour {
 			signalQualityText.color = new Color(0.94140625f, 0.17578125f, 0.10546875f);
 			signalQualityText.text = "Please adjust headband";
 		}
+	}
+
+	private void UpdateConcentrationLevel(ConcentrationLevel level) {
+		Debug.LogWarning ("Concentration level = " + level);
 	}
 }
 

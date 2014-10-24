@@ -14,6 +14,9 @@ public class EegInput : MonoBehaviour {
 	public delegate void SignalQualityChangedEvent(bool isGood);
 	public static event SignalQualityChangedEvent OnSignalQualityChanged;
 
+	public delegate void ConcentrationLevelChangedEvent(ConcentrationLevel level);
+	public static event ConcentrationLevelChangedEvent OnConcentrationLevelChanged;
+
 	private UDPPacketIO udp;
 	private Osc handler;
 
@@ -24,7 +27,9 @@ public class EegInput : MonoBehaviour {
 	private Single concentrationBase;
 	private Single[] concArray = new Single[100];
 	private int concCounter = 0;
-	private float acceptError = 0.2f;
+	private ConcentrationLevel concentrationLevel;
+	private bool alwaysUpdateConcentrationBase = true;
+
 	private bool signalQualityGood = false;
 	private bool signalQualityChanged = false;
 
@@ -32,8 +37,6 @@ public class EegInput : MonoBehaviour {
 	private bool doubleBlinked = false;
 	private DateTime prevBlinkTime = DateTime.UtcNow;
 	private TimeSpan doubleBlinkRate = TimeSpan.FromMilliseconds (200);
-
-	public enum ConcentrationLevel { Red, Orange, Green };
 
 	void Start () {
 		doubleBlinkRate = TimeSpan.FromMilliseconds (doubleBlinkRateInMilliseconds);
@@ -67,6 +70,14 @@ public class EegInput : MonoBehaviour {
 			OnDoubleBlink.Invoke ();
 			doubleBlinked = false;
 		}
+
+		ConcentrationLevel previousConcentrationLevel = concentrationLevel;
+		concentrationLevel = GetConcentrationLevel ();
+		bool concentrationLevelChanged = previousConcentrationLevel != concentrationLevel;
+		if (concentrationLevelChanged && OnConcentrationLevelChanged != null) {
+			Debug.Log ("Concentation changed to: " + concentrationLevel);
+			OnConcentrationLevelChanged.Invoke(concentrationLevel);
+		}
 	}
 
 	void BetaMessage(OscMessage message) {
@@ -88,12 +99,17 @@ public class EegInput : MonoBehaviour {
 	}
 	
 	public bool IsConcentrated() {
-		return smoothedBeta > (concentrationBase - concentrationBase * acceptError);
+		return concentrationLevel == ConcentrationLevel.Orange ||
+			   concentrationLevel == ConcentrationLevel.Green;
 	}
 
 	public ConcentrationLevel GetConcentrationLevel() {
+		if (smoothedBeta == Single.NaN || concentrationBase == Single.NaN) {
+			return ConcentrationLevel.Green;
+		}
+
 		Single levelGreen = concentrationBase * (Single)1.10; // +10%
-		Single levelOrange = concentrationBase * (Single)0.90; // -10%
+		Single levelOrange = concentrationBase * (Single)0.80; // -20%
 		if (smoothedBeta > levelGreen) return ConcentrationLevel.Green;
 		if (smoothedBeta > levelOrange) return ConcentrationLevel.Orange;
 		return ConcentrationLevel.Red;
@@ -159,12 +175,36 @@ public class EegInput : MonoBehaviour {
 		}
 		result /= concArray.Length;
 
-		if (result > concentrationBase)
+		bool concentrationIncreased = result > concentrationBase;
+		if (concentrationIncreased || alwaysUpdateConcentrationBase) {
 			concentrationBase = result;
+			if (!alwaysUpdateConcentrationBase) {
+				Debug.LogWarning("Difficulty increased to: " + result);
+			}
+		}
 
 		concCounter++;
 		if (concCounter >= concArray.Length)
 			concCounter = 0;
+	}
+
+	public void Reset() {
+		beta = Single.NaN;
+		betaArray = new Single[20]; 
+		smoothedBeta = Single.NaN;
+		betaCounter = 0;
+		concentrationBase = Single.NaN;
+		concArray = new Single[100];
+		concCounter = 0;
+		alwaysUpdateConcentrationBase = true;
+	}
+
+	public void StartTrainingConcentration() {
+		alwaysUpdateConcentrationBase = false;
+		for (int i = 0; i < concArray.Length; i++) {
+			concArray[i] *= 0.75f;
+		}
+		UpdateBaseLevel ();
 	}
 
 	void Log() {
@@ -172,3 +212,5 @@ public class EegInput : MonoBehaviour {
 		Debug.Log ("Good signal: " + IsSignalQualityGood ()); 
 	}
 }
+
+public enum ConcentrationLevel { Red, Orange, Green };
