@@ -22,6 +22,8 @@ public class EegInput : MonoBehaviour {
 	private Single[] concArray = new Single[100];
 	private int concCounter = 0;
 	private float acceptError = 0.2f;
+	private bool fp1IsGood = false;
+	private bool fp2IsGood = false;
 
 	private DateTime prevBlinkTime = DateTime.UtcNow;
 	private TimeSpan doubleBlinkRate = TimeSpan.FromMilliseconds (200);
@@ -38,7 +40,7 @@ public class EegInput : MonoBehaviour {
 		handler.init (udp);
 		handler.SetAddressHandler ("/muse/dsp/elements/beta", BetaMessage);
 		handler.SetAddressHandler ("/muse/dsp/blink", BlinkMessage);
-		handler.SetAddressHandler ("/muse/dsp/status_indicator", StatusIndicator);
+		handler.SetAddressHandler ("/muse/dsp/elements/is_good", IsGoodMessage);
 
 		InvokeRepeating ("LogBeta", 3, 2);
 		InvokeRepeating ("UpdateSmoothedBeta", 3, 0.1f);
@@ -73,10 +75,6 @@ public class EegInput : MonoBehaviour {
 			}
 		}
 	}
-
-	void StatusIndicator(OscMessage message) {
-		Debug.Log (Osc.OscMessageToString (message));
-	}
 	
 	public bool IsConcentrated() {
 		return smoothedBeta > (concentrationBase - concentrationBase * acceptError);
@@ -88,6 +86,17 @@ public class EegInput : MonoBehaviour {
 		if (smoothedBeta > levelGreen) return ConcentrationLevel.Green;
 		if (smoothedBeta > levelOrange) return ConcentrationLevel.Orange;
 		return ConcentrationLevel.Red;
+	}
+
+	void IsGoodMessage(OscMessage message) {
+		if (message.Values.Count == 4) {
+			fp1IsGood = message.Values[1].Equals(1);
+			fp2IsGood = message.Values[2].Equals(1);
+		}
+	}
+
+	public bool IsGood() {
+		return fp1IsGood && fp2IsGood;
 	}
 
 	/**
@@ -143,7 +152,8 @@ public class EegInput : MonoBehaviour {
 			concCounter = 0;
 	}
 
-	void LogBeta() {
+	void Log() {
 		Debug.Log ("Base: " + concentrationBase + " Beta:" + smoothedBeta + " (" + (smoothedBeta - concentrationBase) + ")");
+		Debug.Log ("Good signal: " + IsGood ()); 
 	}
 }
