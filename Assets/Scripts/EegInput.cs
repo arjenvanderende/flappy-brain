@@ -14,12 +14,12 @@ public class EegInput : MonoBehaviour {
 	private UDPPacketIO udp;
 	private Osc handler;
 
-	private float beta;
-	private float[] betaArray = new float[20]; 
-	private float smoothedBeta;
+	private Single beta;
+	private Single[] betaArray = new Single[20]; 
+	private Single smoothedBeta;
 	private int betaCounter = 0;
-	private float concentrationBase;
-	private float[] concArray = new float[100];
+	private Single concentrationBase;
+	private Single[] concArray = new Single[100];
 	private int concCounter = 0;
 	private float acceptError = 0.2f;
 
@@ -29,7 +29,6 @@ public class EegInput : MonoBehaviour {
 	public enum ConcentrationLevel { Red, Orange, Green };
 
 	void Start () {
-		concentrationBase = 0.10f;
 		doubleBlinkRate = TimeSpan.FromMilliseconds (doubleBlinkRateInMilliseconds);
 
 		udp = GetComponent<UDPPacketIO> ();
@@ -44,12 +43,13 @@ public class EegInput : MonoBehaviour {
 		InvokeRepeating ("LogBeta", 3, 2);
 		InvokeRepeating ("UpdateSmoothedBeta", 3, 0.1f);
 		InvokeRepeating ("UpdateBaseLevel", 3, 0.1f);
+
 	}
 
 	void BetaMessage(OscMessage message) {
-		// messages for dsp elements are of the float type and can be NaN
-		float avgFP = AverageFP (message);
-		if (!float.IsNaN (avgFP)) {
+		// messages for dsp elements are of the Single type and can be NaN
+		Single avgFP = AverageFP (message);
+		if (!Single.IsNaN (avgFP)) {
 			beta = avgFP;
 		}
 	}
@@ -93,13 +93,13 @@ public class EegInput : MonoBehaviour {
 	/**
 	 * Calculate average of electrode FP1 and FP2
 	 */ 
-	float AverageFP(OscMessage message) {
+	Single AverageFP(OscMessage message) {
 		if (message.Values.Count <= 2)
-			return float.NaN;
-		float fp1 = (float)message.Values [1];
-		float fp2 = (float)message.Values [2];
-		if (float.IsNaN (fp1) || float.IsNaN (fp2))
-			return float.NaN;
+			return Single.NaN;
+		Single fp1 = (Single)message.Values [1];
+		Single fp2 = (Single)message.Values [2];
+		if (Single.IsNaN (fp1) || Single.IsNaN (fp2))
+			return Single.NaN;
 		else
 			return (fp1 + fp2) / 2;
 	}
@@ -109,9 +109,9 @@ public class EegInput : MonoBehaviour {
 	 */
 	void UpdateSmoothedBeta(){
 		betaArray [betaCounter] = beta;
-		float result = 0;
-		foreach (float value in betaArray) {
-			if (float.IsNaN(value))
+		Single result = 0;
+		foreach (Single value in betaArray) {
+			if (Single.IsNaN(value))
 				return;
 			result += value;
 		}
@@ -127,9 +127,9 @@ public class EegInput : MonoBehaviour {
 	 */
 	void UpdateBaseLevel() {
 		concArray [concCounter] = smoothedBeta;
-		float result = 0;
-		foreach (float value in concArray) {
-			if (float.IsNaN(value))
+		Single result = 0;
+		foreach (Single value in concArray) {
+			if (Single.IsNaN(value))
 				return;
 			result += value;
 		}
