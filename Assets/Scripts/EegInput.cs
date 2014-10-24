@@ -2,27 +2,24 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using System;
 
 public class EegInput : MonoBehaviour {
-
-	private UDPPacketIO udp;
-	private Osc handler;
-
-	private Single beta;
-	private Single[] betaArray = new Single[20]; 
-	private Single smoothedBeta;
-	private int betaCounter = 0;
-	private Single concentrationBase;
-	private Single[] concArray = new Single[100];
-	private int concCounter = 0;
-	private Single acceptError = (float)0.2;
 
 	public delegate void BlinkAction ();
 	public static event BlinkAction OnBlink;
 
-	enum ConcentrationLevel { Red, Orange, Green };
+	private UDPPacketIO udp;
+	private Osc handler;
 
+	private float beta;
+	private float[] betaArray = new float[20]; 
+	private float smoothedBeta;
+	private int betaCounter = 0;
+	private float concentrationBase;
+	private float[] concArray = new float[100];
+	private int concCounter = 0;
+	private float acceptError = 0.2f;
+	
 	void Start () {
 		udp = GetComponent<UDPPacketIO> ();
 		udp.init ("127.0.0.1", 3001, 3000);
@@ -34,16 +31,16 @@ public class EegInput : MonoBehaviour {
 		handler.SetAddressHandler ("/muse/dsp/status_indicator", StatusIndicator);
 
 		InvokeRepeating ("LogBeta", 3, 2);
-		InvokeRepeating ("UpdateSmoothedBeta", 3, (float)0.1);
-		InvokeRepeating ("UpdateBaseLevel", 3, (float)0.1);
+		InvokeRepeating ("UpdateSmoothedBeta", 3, 0.1f);
+		InvokeRepeating ("UpdateBaseLevel", 3, 0.1f);
 
-		concentrationBase = (Single)0.10;
+		concentrationBase = 0.10f;
 	}
 
 	void BetaMessage(OscMessage message) {
-		// messages for dsp elements are of the Single type and can be NaN
-		Single avgFP = AverageFP (message);
-		if (!Single.IsNaN (avgFP)) {
+		// messages for dsp elements are of the float type and can be NaN
+		float avgFP = AverageFP (message);
+		if (!float.IsNaN (avgFP)) {
 			beta = avgFP;
 		}
 	}
@@ -64,9 +61,9 @@ public class EegInput : MonoBehaviour {
 		return smoothedBeta > (concentrationBase - concentrationBase * acceptError);
 	}
 
-	public Single GetConcentrationLevel() {
-		Single levelGreen = concentrationBase * 1.10; // +10%
-		Single levelOrange = concentrationBase * 0.90; // -10%
+	public ConcentrationLevel GetConcentrationLevel() {
+		float levelGreen = concentrationBase * 1.10f; // +10%
+		float levelOrange = concentrationBase * 0.90f; // -10%
 		if (smoothedBeta > levelGreen) return ConcentrationLevel.Green;
 		if (smoothedBeta > levelOrange) return ConcentrationLevel.Orange;
 		return ConcentrationLevel.Red;
@@ -75,13 +72,13 @@ public class EegInput : MonoBehaviour {
 	/**
 	 * Calculate average of electrode FP1 and FP2
 	 */ 
-	Single AverageFP(OscMessage message) {
+	float AverageFP(OscMessage message) {
 		if (message.Values.Count <= 2)
-			return Single.NaN;
-		Single fp1 = (Single)message.Values [1];
-		Single fp2 = (Single)message.Values [2];
-		if (Single.IsNaN (fp1) || Single.IsNaN (fp2))
-			return Single.NaN;
+			return float.NaN;
+		float fp1 = (float)message.Values [1];
+		float fp2 = (float)message.Values [2];
+		if (float.IsNaN (fp1) || float.IsNaN (fp2))
+			return float.NaN;
 		else
 			return (fp1 + fp2) / 2;
 	}
@@ -91,9 +88,9 @@ public class EegInput : MonoBehaviour {
 	 */
 	void UpdateSmoothedBeta(){
 		betaArray [betaCounter] = beta;
-		Single result = 0;
-		foreach (Single value in betaArray) {
-			if (Single.IsNaN(value))
+		float result = 0;
+		foreach (float value in betaArray) {
+			if (float.IsNaN(value))
 				return;
 			result += value;
 		}
@@ -109,9 +106,9 @@ public class EegInput : MonoBehaviour {
 	 */
 	void UpdateBaseLevel() {
 		concArray [concCounter] = smoothedBeta;
-		Single result = 0;
-		foreach (Single value in concArray) {
-			if (Single.IsNaN(value))
+		float result = 0;
+		foreach (float value in concArray) {
+			if (float.IsNaN(value))
 				return;
 			result += value;
 		}
@@ -129,3 +126,5 @@ public class EegInput : MonoBehaviour {
 		Debug.Log ("Base: " + concentrationBase + " Beta:" + smoothedBeta + " (" + (smoothedBeta - concentrationBase) + ")");
 	}
 }
+
+public enum ConcentrationLevel { Red, Orange, Green };
