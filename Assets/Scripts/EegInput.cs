@@ -2,11 +2,14 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System;
 
 public class EegInput : MonoBehaviour {
 
+	public double doubleBlinkRateInMilliseconds;
 	public delegate void BlinkAction ();
 	public static event BlinkAction OnBlink;
+	public static event BlinkAction OnDoubleBlink;
 
 	private UDPPacketIO udp;
 	private Osc handler;
@@ -19,8 +22,14 @@ public class EegInput : MonoBehaviour {
 	private float[] concArray = new float[100];
 	private int concCounter = 0;
 	private float acceptError = 0.2f;
-	
+
+	private DateTime prevBlinkTime = DateTime.UtcNow;
+	private TimeSpan doubleBlinkRate = TimeSpan.FromMilliseconds (200);
+
 	void Start () {
+		concentrationBase = 0.10f;
+		doubleBlinkRate = TimeSpan.FromMilliseconds (doubleBlinkRateInMilliseconds);
+
 		udp = GetComponent<UDPPacketIO> ();
 		udp.init ("127.0.0.1", 3001, 3000);
 		
@@ -33,8 +42,6 @@ public class EegInput : MonoBehaviour {
 		InvokeRepeating ("LogBeta", 3, 2);
 		InvokeRepeating ("UpdateSmoothedBeta", 3, 0.1f);
 		InvokeRepeating ("UpdateBaseLevel", 3, 0.1f);
-
-		concentrationBase = 0.10f;
 	}
 
 	void BetaMessage(OscMessage message) {
@@ -46,10 +53,22 @@ public class EegInput : MonoBehaviour {
 	}
 
 	void BlinkMessage(OscMessage message) {
-		if (message.Values.Count == 1 && (int)message.Values [0] == 1) {
+		bool blinked = message.Values.Count == 1 && (int)message.Values [0] == 1;
+		if (blinked) {
 			Debug.Log ("Blinked!");
 			if (OnBlink != null)
 				OnBlink.Invoke ();
+
+			DateTime now = DateTime.UtcNow;
+			TimeSpan doubleBlinkDuration = now - prevBlinkTime;
+			bool doubleBlinked = doubleBlinkDuration < doubleBlinkRate;
+			prevBlinkTime = now;
+
+			if (doubleBlinked) {
+				Debug.Log ("Double blinked!");
+				if (OnDoubleBlink != null)
+					OnDoubleBlink.Invoke ();
+			}
 		}
 	}
 

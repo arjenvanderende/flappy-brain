@@ -20,11 +20,16 @@ public class GameController : MonoBehaviour {
 
 	private GameState gameState;
 	private bool spawingPipes;
+	private bool blinked = false;
+	private bool doubleBlinked = false;
 
 	void Start () {
 		flappyController = flappy.GetComponent<FlappyController> ();
 		flappySize = flappy.GetComponent<SpriteRenderer> ().bounds.size;
 		pipeSize = pipeSpawning.pipe.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer> ().bounds.size;
+
+		EegInput.OnBlink += RegisterBlinked;
+		EegInput.OnDoubleBlink += RegisterDoubleBlinked;
 
 		StartTitleScreen ();
 	}
@@ -47,7 +52,6 @@ public class GameController : MonoBehaviour {
 		flappyController.Respawn ();
 		gameState = GameState.Playing;
 
-		EegInput.OnBlink += JumpFlappy;
 		Scorer.OnScore += IncreaseScore;
 		GameOverTrigger.OnGameOver += StartGameOver;
 
@@ -59,7 +63,6 @@ public class GameController : MonoBehaviour {
 		flappy.SetActive (false);
 		gameState = GameState.GameOver;
 
-		EegInput.OnBlink -= JumpFlappy;
 		Scorer.OnScore -= IncreaseScore;
 		GameOverTrigger.OnGameOver -= StartGameOver;
 	}
@@ -93,7 +96,7 @@ public class GameController : MonoBehaviour {
 	void Update() {
 		switch (gameState) {
 			case GameState.TitleScreen:
-				if (Input.GetButton ("Fire1")) {
+				if (Input.GetButton ("Fire1") || doubleBlinked) {
 					StartGame();
 				}
 				break;
@@ -106,7 +109,7 @@ public class GameController : MonoBehaviour {
 					Autopilot (targetHeight);
 				}
 
-				if (Input.GetButton ("Fire1")) {
+				if (Input.GetButton ("Fire1") || blinked) {
 					flappyController.JumpEvent ();
 				}
 				break;
@@ -117,6 +120,10 @@ public class GameController : MonoBehaviour {
 				}
 				break;
 		}
+
+		// Reset blink events
+		blinked = false;
+		doubleBlinked = false;
 	}
 		
 	private void Autopilot(float targetHeight) {
@@ -150,6 +157,14 @@ public class GameController : MonoBehaviour {
 	private void IncreaseScore() {
 		score++;
 		scoreText.text = score.ToString ();
+	}
+
+	private void RegisterBlinked() {
+		blinked = true;
+	}
+
+	private void RegisterDoubleBlinked() {
+		doubleBlinked = true;
 	}
 }
 
