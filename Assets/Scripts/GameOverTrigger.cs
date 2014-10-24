@@ -7,7 +7,9 @@ public class GameOverTrigger : MonoBehaviour {
 	public static event GameOverEvent OnGameOver;
 	
 	void OnTriggerExit2D (Collider2D other) {
-		if (other.tag == "Player" && OnGameOver != null) {
+		bool collidedWithPlayer = other.tag == "Player";
+		bool exitedLeftOfCollider = other.transform.position.x < transform.position.x;
+		if (collidedWithPlayer && exitedLeftOfCollider && OnGameOver != null) {
 			OnGameOver.Invoke();
 		}
 	}
