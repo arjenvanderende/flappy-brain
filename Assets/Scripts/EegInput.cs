@@ -21,6 +21,8 @@ public class EegInput : MonoBehaviour {
 	public delegate void BlinkAction ();
 	public static event BlinkAction OnBlink;
 
+	enum ConcentrationLevel { Red, Orange, Green };
+
 	void Start () {
 		udp = GetComponent<UDPPacketIO> ();
 		udp.init ("127.0.0.1", 3001, 3000);
@@ -60,6 +62,14 @@ public class EegInput : MonoBehaviour {
 	
 	public bool IsConcentrated() {
 		return smoothedBeta > (concentrationBase - concentrationBase * acceptError);
+	}
+
+	public Single GetConcentrationLevel() {
+		Single levelGreen = concentrationBase * 1.10; // +10%
+		Single levelOrange = concentrationBase * 0.90; // -10%
+		if (smoothedBeta > levelGreen) return ConcentrationLevel.Green;
+		if (smoothedBeta > levelOrange) return ConcentrationLevel.Orange;
+		return ConcentrationLevel.Red;
 	}
 
 	/**
