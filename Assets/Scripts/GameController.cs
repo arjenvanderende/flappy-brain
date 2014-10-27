@@ -103,8 +103,9 @@ public class GameController : MonoBehaviour {
 	void Update() {
 		switch (gameState) {
 			case GameState.TitleScreen:
-				bool userClicked = Input.GetButton ("Fire1") || doubleBlinked;
-				if (userClicked && eegInput.IsSignalQualityGood ()) {
+				bool userClicked = Input.GetButton ("Fire1");
+				bool userBlinked = doubleBlinked && eegInput.IsSignalQualityGood ();
+				if (userClicked || userBlinked) {
 					StartGame();
 				}
 				break;
@@ -122,8 +123,7 @@ public class GameController : MonoBehaviour {
 				}
 				break;
 			case GameState.GameOver:
-				if (!spawingPipes)
-				{
+				if (!spawingPipes) {
 					StartTitleScreen();
 				}
 				break;
