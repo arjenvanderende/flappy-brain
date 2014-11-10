@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour {
 	public GameObject flappy;
 	public EegInput eegInput;
 	public GUIText scoreText;
+	public GUIText gameModeText;
 	public GUIText signalQualityText;
 	public GameObject titleScreen;
 	public GameObject gameOverScreen;
@@ -34,6 +35,7 @@ public class GameController : MonoBehaviour {
 		EegInput.OnSignalQualityChanged += UpdateSignalQualityText;
 		EegInput.OnConcentrationLevelChanged += UpdateConcentrationLevel;
 
+		UpdateGameModeText ();
 		UpdateSignalQualityText (eegInput.IsSignalQualityGood ());
 		StartTitleScreen ();
 	}
@@ -44,12 +46,14 @@ public class GameController : MonoBehaviour {
 		flappy.SetActive (false);
 		gameOverScreen.SetActive (false);
 		scoreText.gameObject.SetActive (false);
+		gameModeText.gameObject.SetActive (true);
 		gameState = GameState.TitleScreen;
 	}
 
 	private void StartGame() {
 		titleScreen.SetActive (false);
 		flappy.SetActive (true);
+		gameModeText.gameObject.SetActive (false);
 		scoreText.gameObject.SetActive (true);
 		scoreText.text = "0";
 		score = 0;
@@ -103,7 +107,13 @@ public class GameController : MonoBehaviour {
 	void Update() {
 		switch (gameState) {
 			case GameState.TitleScreen:
-				bool userClicked = Input.GetButton ("Fire1");
+				bool toggleGameMode = Input.GetButtonDown ("Fire2");	
+				if (toggleGameMode) {
+					autoPilot.mode = GetNextAutoPilotMode(autoPilot.mode);
+					UpdateGameModeText();
+				}
+
+				bool userClicked = Input.GetButtonDown ("Fire1");
 				bool userBlinked = doubleBlinked && eegInput.IsSignalQualityGood ();
 				if (userClicked || userBlinked) {
 					StartGame();
@@ -118,7 +128,7 @@ public class GameController : MonoBehaviour {
 					Autopilot (targetHeight);
 				}
 
-				if (Input.GetButton ("Fire1") || blinked) {
+				if (Input.GetButtonDown ("Fire1") || blinked) {
 					flappyController.JumpEvent ();
 				}
 				break;
@@ -177,6 +187,32 @@ public class GameController : MonoBehaviour {
 
 	private void UpdateSignalQualityText(bool isGood) {
 		UpdateMessage (isGood, eegInput.GetConcentrationLevel ());
+	}
+
+	private void UpdateGameModeText() {
+		switch (autoPilot.mode) {
+			case AutoPilotMode.Automatic:
+				gameModeText.text = "\"The autopilot is a hands-free\npiece of electronic wizardry.\"";
+				break;
+			case AutoPilotMode.EegConcentration:
+				gameModeText.text = "\"I'm sorry, did I break your concentration?\"";
+				break;
+			case AutoPilotMode.Disabled:
+				gameModeText.text = "\"Blink and you're dead.\"";
+				break;
+		}
+	}
+
+	private AutoPilotMode GetNextAutoPilotMode(AutoPilotMode mode) {
+		switch (mode) {
+			case AutoPilotMode.Automatic:
+				return AutoPilotMode.EegConcentration;
+			case AutoPilotMode.EegConcentration:
+				return AutoPilotMode.Disabled;
+			//case AutoPilotMode.Disabled:
+			default:
+				return AutoPilotMode.Automatic;
+		}
 	}
 
 	private void UpdateConcentrationLevel(ConcentrationLevel level) {

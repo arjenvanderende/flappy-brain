@@ -298,7 +298,7 @@ GameObject:
   - 4: {fileID: 269859357}
   - 132: {fileID: 269859358}
   m_Layer: 0
-  m_Name: Eeg Signal Quality Text
+  m_Name: Game Mode Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -311,7 +311,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 269859356}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .5, y: 0, z: 0}
+  m_LocalPosition: {x: .5, y: .5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 927957578}
@@ -324,19 +324,19 @@ GUIText:
   m_GameObject: {fileID: 269859356}
   m_Enabled: 1
   serializedVersion: 3
-  m_Text: EEG Signal Quality Text
-  m_Anchor: 7
+  m_Text: Game Mode Text
+  m_Anchor: 4
   m_Alignment: 1
-  m_PixelOffset: {x: 0, y: 80}
+  m_PixelOffset: {x: 0, y: 105}
   m_LineSpacing: 1
   m_TabSize: 4
-  m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Font: {fileID: 12800000, guid: 80d0c2e109d8aa54fa6a2bf01d6b0206, type: 3}
   m_Material: {fileID: 0}
-  m_FontSize: 30
+  m_FontSize: 20
   m_FontStyle: 0
   m_Color:
     serializedVersion: 2
-    rgba: 4279222901
+    rgba: 4282857300
   m_PixelCorrect: 1
   m_RichText: 1
 --- !u!1 &339787537
@@ -690,7 +690,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 750697904}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 110, z: 0}
+  m_LocalPosition: {x: 0, y: 120, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 927957578}
@@ -724,6 +724,7 @@ Transform:
   - {fileID: 748999750}
   - {fileID: 750697906}
   - {fileID: 269859357}
+  - {fileID: 1114765600}
   m_Father: {fileID: 0}
   m_RootOrder: 3
 --- !u!1 &965029841
@@ -875,6 +876,57 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_Size: {x: 200, y: 10}
   m_Center: {x: 0, y: 0}
+--- !u!1 &1114765598
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1114765600}
+  - 132: {fileID: 1114765599}
+  m_Layer: 0
+  m_Name: Eeg Signal Quality Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!132 &1114765599
+GUIText:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1114765598}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Text: EEG Signal Quality Text
+  m_Anchor: 4
+  m_Alignment: 1
+  m_PixelOffset: {x: 0, y: 90}
+  m_LineSpacing: 1
+  m_TabSize: 4
+  m_Font: {fileID: 12800000, guid: 80d0c2e109d8aa54fa6a2bf01d6b0206, type: 3}
+  m_Material: {fileID: 0}
+  m_FontSize: 30
+  m_FontStyle: 0
+  m_Color:
+    serializedVersion: 2
+    rgba: 4279222901
+  m_PixelCorrect: 1
+  m_RichText: 1
+--- !u!4 &1114765600
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1114765598}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .5, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 927957578}
+  m_RootOrder: 4
 --- !u!1 &1274031804
 GameObject:
   m_ObjectHideFlags: 0
@@ -1026,7 +1078,8 @@ MonoBehaviour:
   flappy: {fileID: 50651507}
   eegInput: {fileID: 1358357678}
   scoreText: {fileID: 748999749}
-  signalQualityText: {fileID: 269859358}
+  gameModeText: {fileID: 269859358}
+  signalQualityText: {fileID: 1114765599}
   titleScreen: {fileID: 639901891}
   gameOverScreen: {fileID: 750697904}
   pipeSpawning:
@@ -1195,7 +1248,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1727865919}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 110, z: 0}
+  m_LocalPosition: {x: 0, y: 120, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 639901892}
